@@ -26,6 +26,7 @@ package de.resol.vbus.example.customizer;
 import java.net.InetAddress;
 import java.util.TimeZone;
 
+import de.resol.devices.OventropRegumaqX45;
 import de.resol.vbus.ConfigurationOptimizer;
 import de.resol.vbus.ConfigurationOptimizerFactory;
 import de.resol.vbus.ConfigurationValue;
@@ -34,8 +35,10 @@ import de.resol.vbus.ConnectionAdapter;
 import de.resol.vbus.ConnectionCustomizer;
 import de.resol.vbus.Datagram;
 import de.resol.vbus.Packet;
+import de.resol.vbus.RosApp;
 import de.resol.vbus.TcpDataSource;
 import de.resol.vbus.TcpDataSourceProvider;
+import de.resol.vbus.configurationoptimizers.OventropRegumaqX45ConfigurationOptimizer;
 
 public class Main {
 
@@ -44,7 +47,7 @@ public class Main {
 			Connection connection;
 			
 			// Create a connection to a LAN-enabled VBus device
-			TcpDataSource dataSource = TcpDataSourceProvider.fetchInformation(InetAddress.getByName("192.168.13.1"), 500);
+			TcpDataSource dataSource = TcpDataSourceProvider.fetchInformation(InetAddress.getByName("192.168.50.249"), 500);
 			dataSource.setLivePassword("vbus");
 			connection = dataSource.connectLive(0, 0x0020);
 			
@@ -93,10 +96,26 @@ public class Main {
 				}
 				
 				// Generate the set of configuration values to set the clock
-				values = optimizer.generateClockConfiguration(System.currentTimeMillis(), TimeZone.getDefault());
+				//values = optimizer.generateClockConfiguration(System.currentTimeMillis(), TimeZone.getDefault());
 				
-				// Set the clock to (approximately) correct time
-				customizer.saveConfiguration(values, null, false);
+				OventropRegumaqX45ConfigurationOptimizer regu = (OventropRegumaqX45ConfigurationOptimizer) optimizer;
+				
+				//values = regu.setAdjustableValuesRelais(0);
+				//customizer.saveConfiguration(values, null, false);
+				
+				//values = regu.setAdjustableValuesWater(350);
+				//customizer.saveConfiguration(values, null, false);
+				
+
+				OventropRegumaqX45 x45 = new OventropRegumaqX45(values, customizer);
+				x45.setWarmwasserTSoll(45);
+				x45.setRelais0Handbetrieb(RosApp.Handbetrieb.Auto);
+				System.out.println("New:");
+				for (int i = 0; i < values.length; i++) {
+					ConfigurationValue value = values [i];
+
+					System.out.println(value.getValueId() + ": " + value.getValue());
+				}
 			}
 			
 			// Disconnect the connection

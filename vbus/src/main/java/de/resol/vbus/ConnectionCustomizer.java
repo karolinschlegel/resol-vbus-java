@@ -107,7 +107,7 @@ public class ConnectionCustomizer extends Customizer {
 	
 	@Override
 	protected ConfigurationValue[] saveConfigurationInternal(final ConfigurationValue[] newValues, final ConfigurationValue[] oldValues, final boolean optimize) throws IOException {
-		return transceiveConfiguration(TransceiveAction.SAVE, new ConfigurationValueFilter() {
+		return transceiveConfiguration(TransceiveAction.SET, new ConfigurationValueFilter() {
 			
 			public ConfigurationValue[] filterConfigurationValues(ConfigurationValue[] values, int round) {
 				if (optimize) {

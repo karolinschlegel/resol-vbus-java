@@ -1,0 +1,9 @@
+/.history/
+/vbus/target/
+/vbus/
+/vbus-example/
+.project
+vbus/.classpath
+vbus/.project
+vbus-example/.classpath
+vbus-example/.project
